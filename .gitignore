@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Application cache & logs
+application/cache/*
+application/logs/*
+!application/cache/index.html
+!application/logs/index.html
+
+# Media uploads
+media_library/*
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backups
+system.backup*/

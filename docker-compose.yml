@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cms-sekolahku-app
+    ports:
+      - "8080:80"
+    environment:
+      CI_ENV: development
+    volumes:
+      - ./application/cache:/var/www/html/application/cache
+      - ./application/logs:/var/www/html/application/logs
+      - ./media_library:/var/www/html/media_library
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - cms-network
+
+  db:
+    image: mariadb:10.5
+    container_name: cms-sekolahku-db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_cms_sekolahku
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - cms-network
+
+volumes:
+  db_data:
+
+networks:
+  cms-network:
+    driver: bridge
